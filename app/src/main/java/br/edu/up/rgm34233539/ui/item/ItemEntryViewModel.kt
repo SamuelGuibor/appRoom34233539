@@ -27,7 +27,7 @@ import java.text.NumberFormat
 /**
  * ViewModel to validate and insert items in the Room database.
  */
-class ItemEntryViewModel(itemsRepository: ItemsRepository) : ViewModel() {
+class ItemEntryViewModel(private val itemsRepository: ItemsRepository) : ViewModel() {
 
     /**
      * Holds current item ui state
@@ -47,6 +47,11 @@ class ItemEntryViewModel(itemsRepository: ItemsRepository) : ViewModel() {
     private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
         return with(uiState) {
             name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()
+        }
+    }
+    suspend fun saveItem() {
+        if (validateInput()) {
+            itemsRepository.insertItem(itemUiState.itemDetails.toItem())
         }
     }
 }
